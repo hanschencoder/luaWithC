@@ -7,7 +7,7 @@ typedef int bool;
 
 int dumpStack(lua_State* L) {
 
-    printf("=================== Õ»¶¥ ===================\n");
+    printf("=================== æ ˆé¡¶ ===================\n");
     printf("%-10s%-13s%s\n", "index ", "type", "value");
     int i;
     int length = lua_gettop(L);
@@ -46,7 +46,7 @@ int dumpStack(lua_State* L) {
             break;
         }
     }
-    printf("=================== Õ»µ× ===================\n");
+    printf("=================== æ ˆåº• ===================\n");
     return 0;
 }
 
@@ -54,7 +54,7 @@ lua_State *load_lua(char *filename, bool run_script) {
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
 
-    //¼ÓÔØ½Å±¾²¢ÔËĞĞ
+    //åŠ è½½è„šæœ¬å¹¶è¿è¡Œ
     if (luaL_loadfile(L, filename) || (run_script && lua_pcall(L, 0, 0, 0))) {
         printf("load Lua script failed: %s\n", lua_tostring(L, -1));
         return NULL;
@@ -70,18 +70,18 @@ void c_call_lua() {
         return;
     }
 
-    //¶ÁÈ¡±äÁ¿
+    //è¯»å–å˜é‡
     lua_getglobal(L, "str");
     printf("[line:%d] luaV_tostring(L, -1):%s\n", __LINE__, lua_tostring(L, -1));
 
-    //¶ÁÈ¡table
+    //è¯»å–table
     lua_getglobal(L, "table");
     lua_getfield(L, -1, "name");
     printf("[line:%d] lua_tostring(L,-1);:%s\n", __LINE__, lua_tostring(L, -1));
 
-    //µ÷ÓÃº¯Êı
-    lua_getglobal(L, "add"); //¶ÁÈ¡º¯Êıµ½Õ»¶¥
-    lua_pushnumber(L, 10); //Ñ¹Èë²ÎÊı
+    //è°ƒç”¨å‡½æ•°
+    lua_getglobal(L, "add"); //è¯»å–å‡½æ•°åˆ°æ ˆé¡¶
+    lua_pushnumber(L, 10); //å‹å…¥å‚æ•°
     lua_pushnumber(L, 20);
 
     if (lua_pcall(L, 2, 1, 0) != 0) {
@@ -90,32 +90,44 @@ void c_call_lua() {
     }
     int result = lua_tonumber(L, -1);
     printf("[line:%d] result:%d\n", __LINE__, result);
-    dumpStack(L);
 
-    //ÖÁ´Ë£¬Õ»ÖĞµÄÇé¿öÊÇ£º
-    //=================== Õ»¶¥ ===================
-    //  Ë÷Òı  ÀàĞÍ      Öµ
-    //   4   int£º            30
-    //   3   string£º      hans
-    //   2   table:     table
-    //   1   string:    Hello, Lua !
-    //=================== Õ»µ× ===================
+    dumpStack(L);
+    //è‡³æ­¤ï¼Œæ ˆä¸­çš„æƒ…å†µæ˜¯ï¼š
+    //=================== æ ˆé¡¶ ===================
+    //index     type         value
+    //4         number       30.000000
+    //3         string       hans
+    //2         table        table
+    //1         string       Hello, Lua !
+    //=================== æ ˆåº• ===================
     lua_close(L);
 }
 
 /**
- * ¶¨ÒåÔÚluaÖĞ¿Éµ÷ÓÃµÄº¯Êı£¬Òª×ñÑ­¹æ·¶£º·µ»ØÖµ±ØĞëÎªint£¬Ğè´«Èëlua_State
+ * å®šä¹‰åœ¨luaä¸­å¯è°ƒç”¨çš„å‡½æ•°ï¼Œè¦éµå¾ªè§„èŒƒï¼šè¿”å›å€¼å¿…é¡»ä¸ºintï¼Œéœ€ä¼ å…¥lua_State
  */
 int getTwoVar(lua_State *L) {
 
     dumpStack(L);
-    //    =================== Õ»¶¥ ===================
-    //    index     type         value
-    //    2         number       123.000000
-    //    1         string       hello, this string is from lua world
-    //    =================== Õ»µ× ===================
+    //è‡³æ­¤ï¼Œæ ˆä¸­çš„æƒ…å†µæ˜¯ï¼š
+    //=================== æ ˆé¡¶ ===================
+    //index     type         value
+    //2         number       123.000000
+    //1         string       hello, this string is from lua world
+    //=================== æ ˆåº• ===================
+
     lua_pushnumber(L, 10);
     lua_pushstring(L, "hello");
+
+    dumpStack(L);
+    //è‡³æ­¤ï¼Œæ ˆä¸­çš„æƒ…å†µæ˜¯ï¼š
+    //=================== æ ˆé¡¶ ===================
+    //index     type         value
+    //4         string       hello
+    //3         number       10.000000
+    //2         number       123.000000
+    //1         string       hello, this string is from lua world
+    //=================== æ ˆåº• ===================
     return 2;
 }
 
